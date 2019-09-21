@@ -23,12 +23,12 @@ class image_queue:
 def func(frames_to_process_recived, known_face_encodings_recived, queue_recived, queue_images_recived):
     face_locations = []
     face_encodings = []
-    face_names = []
+    
     unknown_face = "Unknown"
     first_frame = frames_to_process_recived[0]
     del frames_to_process_recived[0]
 
-    rgb_frame = first_frame.frame[:, :, ::-1]
+    rgb_frame = first_frame.frame[:, :, ::-1] #conversao para usar no facerecog
 
     start_time = time.time()
     # Find all the faces and face encodings in the current frame of video
@@ -37,6 +37,7 @@ def func(frames_to_process_recived, known_face_encodings_recived, queue_recived,
 
     elapsed_time = time.time() - start_time
     print("[INFO][{}] Tempo para achar rostos: {}".format(first_frame.id,elapsed_time))
+    
     face_names = []
     start_time = time.time()
     for face_encoding in face_encodings:

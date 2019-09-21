@@ -18,10 +18,11 @@ import os
 # Open video file
 start_total_time = time.time()
 
+#pega o video
 video_capture = cv2.VideoCapture("/home/murilo/Github/Dataset PI/praca4k5min.mp4")
 length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
-batch_size = 2
+batch_size = 2  #quantas fotos vao para a gpu pra serem processadas
 frames = []
 frame_count = 0
 frames_to_process = 10   #significa 1 a cada X frames
@@ -56,14 +57,9 @@ face_encodings = []
 face_names = []
 frame_number = 0
 
-
+#cria como vai ser o output
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 output_movie = cv2.VideoWriter(output_name, fourcc, 30, resolucao_output)
-
-
-
-
-
 
 while video_capture.isOpened():
     # Grab a single frame of video
@@ -84,7 +80,7 @@ while video_capture.isOpened():
         frames_to_batch = []
         for j in range(0, batch_size*frames_to_process):
             
-            if j%frames_to_process == 0:
+            if j % frames_to_process == 0:
                 frames_to_batch.append(frames[j])
 
         batch_time = time.time()
@@ -95,11 +91,8 @@ while video_capture.isOpened():
 
 
         tempo_restante = (length-frame_count)/(batch_size*frames_to_process) * final_batch_time
-
         tempo_restante_h = int(tempo_restante/3600)
-
         tempo_restante_m = int ((tempo_restante - (tempo_restante_h*3600)) /60)
-
         tempo_restante_s = int((tempo_restante -((tempo_restante_h*3600) + (tempo_restante_m *60))))
 
         os.system('clear')
