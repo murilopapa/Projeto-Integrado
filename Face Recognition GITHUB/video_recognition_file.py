@@ -4,15 +4,15 @@ import os
 import time
 import multiprocessing
 
-num_processadores = 4
-num_frames = 2
-path_video = "/home/murilo/Github/Dataset PI/praca4k3sec.mp4"
-output_name = "praca4k3sec.avi"
-acuracia_minima = 0.5
-#acuracia_minima de 0.6 eh no minimo 40% de ctz
-#num_frames equivale á: quero pegar 1 frame a cada 3, logo, o valor de num_frames = 3
+num_processadores = 4                                           #num de processos simultaneos que o pc aguenta
+num_frames = 3                                                  #1 a cada "num_frames" para processar
+path_video = "/home/murilo/Github/Dataset PI/praca4k3sec.mp4"   #caminho onde o video para processar está
+output_name = "praca4k3sec.avi"                                 #nome do output do video
+acuracia_minima = 0.4                                           #acuracia_minima de 0.4 eh no minimo 60% de ctz
+path = "imagens/"                                               #path é onde ta as img do BD
 
 
+#struct para armazenar as frames, os nomes que apareceram nela, e o id, que é o numero dela, pra organizar na ordem
 class image_queue:
         def __init__(self, frame, id):
             self.frame = frame
@@ -113,27 +113,20 @@ def func(frames_to_process_recived, known_face_encodings_recived, queue_recived,
 
 
 if __name__ == '__main__':
-    # This is a demo of running face recognition on a video file and saving the results to a new video file.
-    #
-    # PLEASE NOTE: This example requires OpenCV (the `cv2` library) to be installed only to read from your webcam.
-    # OpenCV is *not* required to use the face_recognition library. It's only required if you want to run this
-    # specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
 
-    start_time = time.time()
+    start_time = time.time()        #timer para ver quanto tempo durou o processo, que vai ser removido cepa
 
-    todas_as_frames = []
+    todas_as_frames = []            #vetor com todas as frames ja processadas
 
-    # Open the input movie file
+    # Tratamento do video de input
     input_movie = cv2.VideoCapture(path_video)
     length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    # Create an output movie file (make sure resolution/frame rate matches input video!)
+    # Tratamento do video de output
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     output_movie = cv2.VideoWriter(output_name, fourcc, 30, (1280, 720))
 
-    path = "imagens/"
-
-    # Load some sample pictures and learn how to recognize them.
+    # Carrega o database
     directory = os.fsencode(path)
     count = 0
     known_face_encodings = []
@@ -147,40 +140,48 @@ if __name__ == '__main__':
             count = count + 1
             continue
 
-    print("[INFO] Banco de dados: {} imagens".format(count))
-    print("[INFO] Frames encontradas: {}".format(length))
-    print("[INFO] Processadores: {}".format(num_processadores))
-    print("[INFO] Pegar 1 a cada {} frames".format(num_frames))
-    unknown_face = "Desconhecido"
-    # Initialize some variables
-    face_locations = []
-    face_encodings = []
-    face_names = []
-    frame_number = 0
+    # Alguns prints de controle
+    print("[INFO] Banco de dados: {} imagens".format(count))    #num de img no bd
+    print("[INFO] Frames encontradas: {}".format(length))       #num de frames do video
+    print("[INFO] Processadores: {}".format(num_processadores)) #num de processos simultaneos
+    print("[INFO] Pegar 1 a cada {} frames".format(num_frames)) #1 a cada x frames pra processar
+    
+    unknown_face = "Desconhecido"   #da o nome para rostos desconhecidos
+
+    # Inicializando algumas variaveis
+    face_locations = []     #aqui guarda onde esta as faces encontradas nas frames
+    face_encodings = []     
+    face_names = []         
+    frame_number = 0        #qual frame eu estou pegando, pra ter a contagem
 
 
-    process_this_frame = True
+    process_this_frame = True   #pra saber se tem que processar a frame ou nao
 
-    queue = multiprocessing.Queue()
+    #nao lembro direito, rs, mas sei que é pra passar as coisas pros processos
+    queue = multiprocessing.Queue() 
     queue_images = multiprocessing.Queue()
     queue.put(1)
+
     while process_this_frame:
-        jobs = []
-        counter = 0
-        for i in range(0, num_processadores):
-            frames_to_process = []
+        jobs = []   #salva os processos
+        counter = 0 
+        for i in range(0, num_processadores):   #loop pra fazer os processos
+            frames_to_process = []      #frames para processar
         # Grab a single frame of video
-            for j in range(0, num_frames):
-                ret, frame = input_movie.read()
-                if not ret:
+            for j in range(0, num_frames):      #um loop para o num de frames totais que um processo vai pegar
+                ret, frame = input_movie.read() #pego a frame do video
+                if not ret:     #se acabou
                     process_this_frame = False
                     break
 
-                frame_number += 1
-                counter += 1
+                frame_number += 1   #somo 1 na var
+                counter += 1        #somo 1 na var
+
+                #pra caso precise flipar o video
                 #frame = cv2.flip( frame, 0 ) #uncomment this line if your video is upside down
                 #frame = cv2.resize(frame,(1280,720)) #uncomment this line if you want to change the input resolution. 1280x720 = Full HD
-                frames_to_process.append(image_queue(frame, frame_number))
+
+                frames_to_process.append(image_queue(frame, frame_number))  #salvo a frame, e o num dela
 
             if frames_to_process:
                 process = multiprocessing.Process(target=func, args=(frames_to_process, known_face_encodings, queue, queue_images))
