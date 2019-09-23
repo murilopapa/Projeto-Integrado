@@ -13,13 +13,16 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 
+firstarg=sys.argv[1]
+
 known_face_names = [] 
 num_processadores = 2
 num_frames = 7
-path_video = "/home/murilo/Github/Dataset PI/praca4k3sec.mp4"
+path_video = firstarg
 output_name = "praca4k3sec.avi"
 acuracia_minima = 0.5
 length = 0
+
 #acuracia_minima de 0.6 eh no minimo 40% de ctz
 #num_frames equivale á: quero pegar 1 frame a cada 3, logo, o valor de num_frames = 3
 
@@ -122,8 +125,8 @@ def func(frames_to_process_recived, known_face_encodings_recived, queue_recived,
 class ShowVideo(QtCore.QObject):
  
     #initiating the built in camera
-    camera_port = 0
-    camera = cv2.VideoCapture(camera_port)
+    #camera_port = 0
+    #camera = cv2.VideoCapture(camera_port)
     VideoSignal = QtCore.pyqtSignal(QtGui.QImage)
     
  
@@ -139,8 +142,10 @@ class ShowVideo(QtCore.QObject):
 
         # Open the input movie file
         input_movie = cv2.VideoCapture(path_video)
-        length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))
+        print("PATH DO VIDEO: {}".format(path_video))
 
+        length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))
+        print("LENGTH DO VIDEO: {}".format(length))
         # Create an output movie file (make sure resolution/frame rate matches input video!)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         output_movie = cv2.VideoWriter(output_name, fourcc, 30, (1280, 720))
@@ -210,8 +215,8 @@ class ShowVideo(QtCore.QObject):
                 for t in to_write:
                     if t.id == (frame_number - counter + i + 1):
                         print("[INFO] Escrevendo frame :{}".format(t.id))
+                        frame_write = cv2.resize(t.frame,(1280,720))
                         color_swapped_image = cv2.resize(t.frame,(640,360))
-                        frame_write = color_swapped_image
                         color_swapped_image = cv2.cvtColor(color_swapped_image, cv2.COLOR_BGR2RGB)
                         height, width, _ = color_swapped_image.shape
                         
@@ -226,12 +231,6 @@ class ShowVideo(QtCore.QObject):
                                                 QtGui.QImage.Format_RGB888)
             
                         self.VideoSignal.emit(qt_image)
-
-                        #frame_write = cv2.resize(t.frame,(1280,720))
-                        t.frame = None
-                        todas_as_frames.append(t)
-                        #output_movie.write(frame_write)
-
                         
                         t.frame = None
                         todas_as_frames.append(t)
@@ -277,6 +276,7 @@ class ShowVideo(QtCore.QObject):
 
         input_movie.release()
         cv2.destroyAllWindows()
+        os.system("python3 video.py " + output_name)
  
  
 class ImageViewer(QtWidgets.QWidget):
