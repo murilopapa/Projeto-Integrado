@@ -11,6 +11,8 @@ from PyQt5.QtWidgets import QMainWindow,QWidget, QPushButton, QAction
 from PyQt5.QtGui import QIcon
 import sys
 import time
+import os
+
 firstarg=sys.argv[1]
 
 
@@ -104,7 +106,7 @@ class VideoWindow(QMainWindow):
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.error.connect(self.handleError)
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile("/home/mateus/Documents/interface/" + firstarg)))
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(os.path.dirname(__file__)) + "/" + firstarg)))
         self.playButton.setEnabled(True)
 
     def openFile(self):

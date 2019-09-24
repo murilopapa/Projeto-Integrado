@@ -22,7 +22,6 @@ path_video = firstarg
 output_name = "praca4k3sec.avi"
 acuracia_minima = 0.5
 length = 0
-
 #acuracia_minima de 0.6 eh no minimo 40% de ctz
 #num_frames equivale á: quero pegar 1 frame a cada 3, logo, o valor de num_frames = 3
 
@@ -55,8 +54,7 @@ def func(frames_to_process_recived, known_face_encodings_recived, queue_recived,
     for face_encoding in face_encodings:
         # See if the face is a match for the known face(s)
         name = unknown_face
-        print("face encoding:")
-        print(face_encoding)
+        
         face_distances = face_recognition.face_distance(known_face_encodings_recived, face_encoding)
 
         menor_dist = 1
@@ -125,8 +123,8 @@ def func(frames_to_process_recived, known_face_encodings_recived, queue_recived,
 class ShowVideo(QtCore.QObject):
  
     #initiating the built in camera
-    #camera_port = 0
-    #camera = cv2.VideoCapture(camera_port)
+    camera_port = 0
+    camera = cv2.VideoCapture(camera_port)
     VideoSignal = QtCore.pyqtSignal(QtGui.QImage)
     
  
@@ -142,10 +140,8 @@ class ShowVideo(QtCore.QObject):
 
         # Open the input movie file
         input_movie = cv2.VideoCapture(path_video)
-        print("PATH DO VIDEO: {}".format(path_video))
-
         length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))
-        print("LENGTH DO VIDEO: {}".format(length))
+
         # Create an output movie file (make sure resolution/frame rate matches input video!)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         output_movie = cv2.VideoWriter(output_name, fourcc, 30, (1280, 720))

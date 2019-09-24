@@ -8,7 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import os
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -47,7 +47,6 @@ class Ui_Dialog(object):
         self.label_4.setObjectName("label_4")
         self.actionVerificaSenha = QtWidgets.QAction(Dialog)
         self.actionVerificaSenha.setObjectName("actionVerificaSenha")
-
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
     #aplica os textos nas labels
