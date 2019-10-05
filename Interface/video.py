@@ -106,6 +106,7 @@ class VideoWindow(QMainWindow):
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.error.connect(self.handleError)
+        print(firstarg)
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.abspath(os.path.dirname(__file__)) + "/" + firstarg)))
         self.playButton.setEnabled(True)
 

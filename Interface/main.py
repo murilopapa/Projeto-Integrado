@@ -61,7 +61,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.liveButton.setFont(font)
         self.liveButton.setObjectName("liveButton")
-        #self.liveButton.clicked.connect(self.openLive) 
+        self.liveButton.clicked.connect(self.openLive) 
         self.verticalLayout.addWidget(self.liveButton, 0, QtCore.Qt.AlignHCenter)
         self.openButton = QtWidgets.QPushButton(self.buttonFrame)
         self.openButton.setMinimumSize(QtCore.QSize(320, 0))
@@ -116,11 +116,12 @@ class Ui_MainWindow(object):
         os.system("python3 interface_recog_file.py " + fileName)
         MainWindow.show()
         
-
-    #def openLive(self):
-    	#MainWindow.hide()
-        #os.system("python3 video.py")
-        #MainWindow.show()
+    def openLive(self):
+        import os 
+        MainWindow.hide()
+        os.system("python3 live.py")
+        MainWindow.show()
+    
 
     def logout(self):
         MainWindow.hide()

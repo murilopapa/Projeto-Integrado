@@ -13,7 +13,7 @@ import numpy as np
 
 escale = 0.5
 camera_default = 0
-path = "imagens/faces/"
+path = "imagens/"
 unknown_face = "Unknown"
 
 
@@ -49,13 +49,13 @@ print("Banco de dados: {} imagens".format(count))
 face_locations = []
 face_encodings = []
 face_names = []
-process_this_frame = True
+process_this_frame = 0
 
 while True:
     # Grab a single frame of video
     # frame = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY) Descomentar essa linha e trocar frame por gray para gerar imagem em preto e branco 
     ret, frame = video_capture.read()
-    frame = cv2.flip( frame, 0 )
+    #frame = cv2.flip( frame, 0 )
     # Resize frame of video to "escale" size for faster face recognition processing
     small_frame = cv2.resize(frame, (0, 0), fx=escale, fy=escale)
     
@@ -63,7 +63,7 @@ while True:
     rgb_small_frame = small_frame[:, :, ::-1]
 
     # Only process every other frame of video to save time
-    if process_this_frame:
+    if process_this_frame % 7 == 0:
         # Find all the faces and face encodings in the current frame of video
         face_locations = face_recognition.face_locations(rgb_small_frame)
         face_encodings = face_recognition.face_encodings(
@@ -83,7 +83,7 @@ while True:
 
             face_names.append(name)
 
-    process_this_frame = not process_this_frame
+    process_this_frame = process_this_frame + 1
 
     # Display the results
     for (top, right, bottom, left), name in zip(face_locations, face_names):

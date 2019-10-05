@@ -315,19 +315,20 @@ if __name__ == '__main__':
     #Button to start the videocapture:
  
     push_button1 =QtWidgets.QPushButton('Start')
-    push_button2 = QtWidgets.QPushButton('Test')
+    #push_button2 = QtWidgets.QPushButton('Test')
     push_button1.clicked.connect(vid.startVideo)
     vertical_layout = QtWidgets.QVBoxLayout()
     
  
     vertical_layout.addWidget(image_viewer)
     vertical_layout.addWidget(push_button1)
-    vertical_layout.addWidget(push_button2)
+    #vertical_layout.addWidget(push_button2)
  
     layout_widget = QtWidgets.QWidget()
     layout_widget.setLayout(vertical_layout)
  
     main_window = QtWidgets.QMainWindow()
     main_window.setCentralWidget(layout_widget)
+    
     main_window.show()
     sys.exit(app.exec_())
