@@ -61,7 +61,7 @@ class ShowVideo(QtCore.QObject):
             rgb_small_frame = small_frame[:, :, ::-1]
 
             # Only process every other frame of video to save time
-            if process_this_frame % 7 == 0:
+            if process_this_frame % 15 == 0:
                 # Find all the faces and face encodings in the current frame of video
                 face_locations = face_recognition.face_locations(rgb_small_frame)
                 face_encodings = face_recognition.face_encodings(
