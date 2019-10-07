@@ -47,11 +47,9 @@ class ShowVideo(QtCore.QObject):
         face_encodings = []
         face_names = []
         process_this_frame = 0
-        print("pre while")
         while True:
             # Grab a single frame of video
             # frame = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY) Descomentar essa linha e trocar frame por gray para gerar imagem em preto e branco 
-            print("while")
             ret, frame = video_capture.read()
             #frame = cv2.flip( frame, 0 )
             # Resize frame of video to "escale" size for faster face recognition processing

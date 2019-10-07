@@ -77,6 +77,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.facesButton.setFont(font)
         self.facesButton.setObjectName("facesButton")
+        self.facesButton.clicked.connect(self.faces)  
         self.verticalLayout.addWidget(self.facesButton, 0, QtCore.Qt.AlignHCenter)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem1)
@@ -128,6 +129,12 @@ class Ui_MainWindow(object):
         import os 
         os.system("python3 login.py")
         sys.exit(app.exec_())
+
+    def faces(self):
+        MainWindow.hide()
+        import os 
+        os.system("nautilus imagens/")
+        MainWindow.show()
 
 
 if __name__ == "__main__":
