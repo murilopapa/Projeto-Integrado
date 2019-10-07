@@ -130,6 +130,7 @@ class ImageViewer(QtWidgets.QWidget):
         super(ImageViewer, self).__init__(parent)
         self.image = QtGui.QImage()
         self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
+        self.setMinimumSize(QtCore.QSize(640, 360))
  
  
     def paintEvent(self, event):
