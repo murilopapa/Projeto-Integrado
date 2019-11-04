@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import pymysql
 import os
 
 class Ui_MainWindow(object):
@@ -113,7 +114,7 @@ class Ui_MainWindow(object):
         self.signInButton.setObjectName("signInButton")
         self.signInButton.setCheckable(False)
         self.signInButton.setChecked(False)
-        self.signInButton.clicked.connect(self.verifica_senha) 
+        self.signInButton.clicked.connect(self.verifica_login) 
         self.verticalLayout_4.addWidget(self.signInButton, 0, QtCore.Qt.AlignHCenter)
         spacerItem10 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_4.addItem(spacerItem10)
@@ -132,17 +133,25 @@ class Ui_MainWindow(object):
         self.labelPassword.setText(_translate("MainWindow", "Password:"))
         self.signInButton.setText(_translate("MainWindow", "Sign In"))
 
-    def verifica_senha(self):  
+    def verifica_login(self):  
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        if self.lineEditUsername.text() == "adm123" and self.lineEditPassword.text() == "adm123":
+        # Conecta ao banco
+        db = pymysql.connect(host="18.229.103.40", user="root", passwd="F5fm5q2i@", db="facedb")
+        # Print para debug da conexao
+        # print(db)
+        cursor = db.cursor()
+        query = "SELECT nome FROM usuarios WHERE login=%s and senha=md5(%s)"
+        cursor.execute(query, (self.lineEditUsername.text(), self.lineEditPassword.text()))
+        #result = cursor.fetchone()
+        result = str(cursor.fetchone()[0]) 
+        # Print para debug 
+        print(result)
+        if result:
             MainWindow.hide()
             import os 
-            os.system("python3 main.py " + self.lineEditUsername.text())
+            os.system("python3 main.py " + result)
             sys.exit(app.exec_())
-
-        #else:
-            #self.label_4.setText(_translate("MainWindow", "Senha Incorreta!"))
 
 
 if __name__ == "__main__":
